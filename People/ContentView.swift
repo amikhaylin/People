@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var persons: [Person] = []
+    @State var persons: [Person]
     
     var body: some View {
         NavigationView {
@@ -34,52 +34,27 @@ struct ContentView: View {
                                 .foregroundColor(.white)
                                 .padding()
                             }
-                            .padding(EdgeInsets(top: 7, leading: 15, bottom: 7, trailing: 15))
+                            .padding(EdgeInsets(top: 6, leading: 15, bottom: 9, trailing: 15))
                         }
                         .buttonStyle(PlainButtonStyle())
                     }
                 }
             }
             .navigationBarTitle("People")
-            .onAppear(perform: loadData)
+            .onAppear(perform: {
+                NetworkService().loadPersons { (persons) in
+                    self.persons = persons
+                }
+            })
             
         }
         
-    }
-    
-    func loadData() {
-        let url = URL(string: "https://www.hackingwithswift.com/samples/friendface.json")!
-        var request = URLRequest(url: url)
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpMethod = "GET"
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data else {
-                print("No data in response: \(error?.localizedDescription)")
-                return
-            }
-            
-            //print("\(String(decoding: data, as: UTF8.self))")
-
-            do {
-                let formatter = DateFormatter()
-                
-                formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-                formatter.calendar = Calendar(identifier: .iso8601)
-                
-                let decoder = JSONDecoder()
-                decoder.dateDecodingStrategy = .formatted(formatter)
-                let decodedData = try decoder.decode([Person].self, from: data)
-                persons = decodedData
-            } catch {
-                print("Decode error \(error.localizedDescription)")
-            }
-        }.resume()
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(persons: [Person(id: UUID().uuidString, name: "John Doe", age: 99, company: "ACME", email: "some@email.com", address: "HOBO", about: "Unknown", registered: Date(), tags: ["tag"], friends: []),
+                              Person(id: UUID().uuidString, name: "Jeine Doe", age: 99, company: "ACME", email: "some@email.com", address: "HOBO", about: "Unknown", registered: Date(), tags: ["tag"], friends: [])])
     }
 }
