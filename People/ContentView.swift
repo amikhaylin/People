@@ -41,10 +41,15 @@ struct ContentView: View {
                 }
             }
             .navigationBarTitle("People")
-            .onAppear(perform: {
+            .navigationBarItems(trailing: Button(action: {
                 NetworkService().loadPersons { (persons) in
                     self.persons = persons
                 }
+            }, label: {
+                Image(systemName: "arrow.triangle.2.circlepath")
+            }))
+            .onAppear(perform: {
+                //TODO: Here will be loading from core data
             })
             
         }
