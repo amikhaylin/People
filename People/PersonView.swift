@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PersonView: View {
     let person: Person
+    let persons: [Person]
     
     var body: some View {
         ScrollView {
@@ -41,13 +42,16 @@ struct PersonView: View {
             
             VStack(alignment: .leading) {
                 ForEach(person.friends, id: \.id ) { friend in
-                    HStack {
-                        Image(systemName: "person.crop.circle")
-                            .font(.largeTitle)
-                            
-                        VStack(alignment: .leading) {
-                            Text(friend.name)
-                                .font(.title3)
+                    NavigationLink(
+                        destination: PersonView(person: getFriend(with: friend.id), persons: self.persons)) {
+                        HStack {
+                            Image(systemName: "person.crop.circle")
+                                .font(.largeTitle)
+                                
+                            VStack(alignment: .leading) {
+                                Text(friend.name)
+                                    .font(.title3)
+                            }
                         }
                     }
                 }
@@ -59,12 +63,18 @@ struct PersonView: View {
         .navigationBarTitle("Person", displayMode: .inline)
     }
     
-    
+    func getFriend(with id: String) -> Person {
+        if let friend = persons.first(where: { $0.id == id }) {
+            return friend
+        } else {
+            fatalError("Friend does not exist")
+        }
+    }
 }
 
 struct PersonView_Previews: PreviewProvider {
     static var previews: some View {
         PersonView(person: Person(id: UUID().uuidString, name: "John Doe", age: 99, company: "ACME", email: "some@email.com", address: "HOBO", about: "Unknown", registered: Date(),
-                                  tags: ["cillum", "consequat", "deserunt", "nostrud", "eiusmod", "minim", "tempor"], friends: []))
+                                  tags: ["cillum", "consequat", "deserunt", "nostrud", "eiusmod", "minim", "tempor"], friends: []), persons: [])
     }
 }

@@ -16,7 +16,7 @@ struct ContentView: View {
                 LazyVStack {
                     ForEach(persons) { person in
                         NavigationLink(
-                            destination: PersonView(person: person)) {
+                            destination: PersonView(person: person, persons: persons)) {
                             ZStack(alignment: .leading) {
                                 Color.orange
                                     .cornerRadius(5.0)
