@@ -14,6 +14,8 @@
 		4DEF851026297C05007F0DE0 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4DEF850F26297C05007F0DE0 /* README.md */; };
 		4DEF851326298081007F0DE0 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DEF851226298081007F0DE0 /* Person.swift */; };
 		4DEF85162629CB5E007F0DE0 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DEF85152629CB5E007F0DE0 /* NetworkService.swift */; };
+		4DEF851B2629CE80007F0DE0 /* PersonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DEF851A2629CE80007F0DE0 /* PersonView.swift */; };
+		4DEF85282629F988007F0DE0 /* TagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DEF85272629F988007F0DE0 /* TagsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		4DEF850F26297C05007F0DE0 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		4DEF851226298081007F0DE0 /* Person.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 		4DEF85152629CB5E007F0DE0 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
+		4DEF851A2629CE80007F0DE0 /* PersonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonView.swift; sourceTree = "<group>"; };
+		4DEF85272629F988007F0DE0 /* TagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,7 +65,9 @@
 			children = (
 				4DEF84FF26297B9A007F0DE0 /* PeopleApp.swift */,
 				4DEF85152629CB5E007F0DE0 /* NetworkService.swift */,
+				4DEF85272629F988007F0DE0 /* TagsView.swift */,
 				4DEF850126297B9B007F0DE0 /* ContentView.swift */,
+				4DEF851A2629CE80007F0DE0 /* PersonView.swift */,
 				4DEF851226298081007F0DE0 /* Person.swift */,
 				4DEF850326297B9D007F0DE0 /* Assets.xcassets */,
 				4DEF850826297B9D007F0DE0 /* Info.plist */,
@@ -88,6 +94,7 @@
 				4DEF84F826297B9A007F0DE0 /* Sources */,
 				4DEF84F926297B9A007F0DE0 /* Frameworks */,
 				4DEF84FA26297B9A007F0DE0 /* Resources */,
+				4DEF851D2629D979007F0DE0 /* TODO finder */,
 			);
 			buildRules = (
 			);
@@ -143,13 +150,36 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		4DEF851D2629D979007F0DE0 /* TODO finder */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "TODO finder";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TAGS=\"TODO:|FIXME:\"\nERRORTAG=\"ERROR:\"\nfind \"${SRCROOT}\" \\( -name \"*.h\" -or -name \"*.m\" -or -name \"*.swift\" \\) -print0 | xargs -0 egrep --with-filename --line-number --only-matching \"($TAGS).*\\$|($ERRORTAG).*\\$\" | perl -p -e \"s/($TAGS)/ warning: \\$1/\" | perl -p -e \"s/($ERRORTAG)/ error: \\$1/\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		4DEF84F826297B9A007F0DE0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4DEF851B2629CE80007F0DE0 /* PersonView.swift in Sources */,
 				4DEF851326298081007F0DE0 /* Person.swift in Sources */,
 				4DEF850226297B9B007F0DE0 /* ContentView.swift in Sources */,
+				4DEF85282629F988007F0DE0 /* TagsView.swift in Sources */,
 				4DEF85162629CB5E007F0DE0 /* NetworkService.swift in Sources */,
 				4DEF850026297B9A007F0DE0 /* PeopleApp.swift in Sources */,
 			);
