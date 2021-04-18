@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import CoreData
 
 struct NetworkService {
-    func loadPersons(completion: @escaping ([Person]) -> ()) {
+    func loadPersons(context: NSManagedObjectContext, completion: @escaping ([Person]) -> ()) {
         let url = URL(string: "https://www.hackingwithswift.com/samples/friendface.json")!
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -30,6 +31,7 @@ struct NetworkService {
                 
                 let decoder = JSONDecoder()
                 decoder.dateDecodingStrategy = .formatted(formatter)
+                decoder.userInfo[CodingUserInfoKey.managedObjectContext] = context
                 let decodedData = try decoder.decode([Person].self, from: data)
                 
                 DispatchQueue.main.async {

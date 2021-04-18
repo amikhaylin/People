@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct PersonView: View {
+    @Environment(\.managedObjectContext) private var viewContext
     let person: Person
-    let persons: [Person]
     
     var body: some View {
         ScrollView {
@@ -18,17 +19,17 @@ struct PersonView: View {
                     .resizable()
                     .frame(width: 100, height: 100)
                 
-                Text(person.name)
+                Text(person.name ?? "Unknown")
                     .font(.title)
                 
-                Text(person.company)
+                Text(person.company ?? "Unknown")
                     .font(.callout)
                 
-                Text(person.email)
+                Text(person.email ?? "N/A")
                 
-                Text(person.address)
+                Text(person.address ?? "N/A")
                 
-                Text(person.about)
+                Text(person.about ?? "N/A")
                     .font(.footnote)
                     .fixedSize(horizontal: false, vertical: true)
                 
@@ -41,15 +42,15 @@ struct PersonView: View {
             }
             
             VStack(alignment: .leading) {
-                ForEach(person.friends, id: \.id ) { friend in
+                ForEach(person.friendsArray, id: \.id ) { friend in
                     NavigationLink(
-                        destination: PersonView(person: getFriend(with: friend.id), persons: self.persons)) {
+                        destination: PersonView(person: getFriend(with: friend.wrappedId))) {
                         HStack {
                             Image(systemName: "person.crop.circle")
                                 .font(.largeTitle)
                                 
                             VStack(alignment: .leading) {
-                                Text(friend.name)
+                                Text(friend.wrappedName)
                                     .font(.title3)
                             }
                         }
@@ -57,13 +58,23 @@ struct PersonView: View {
                 }
                 
                 
-                TagsView(tags: person.tags)
+                TagsView(tags: person.wrappedTags)
             }
         }
         .navigationBarTitle("Person", displayMode: .inline)
     }
     
     func getFriend(with id: String) -> Person {
+        let fetchRequest = NSFetchRequest<Person>(entityName: "Person")
+        let predicate = NSPredicate(format: "id == %@", id)
+        fetchRequest.predicate = predicate
+        let persons: [Person]
+        do {
+            persons = try viewContext.fetch(fetchRequest)
+        } catch {
+            fatalError("Fetch faults \(error.localizedDescription)")
+        }
+        
         if let friend = persons.first(where: { $0.id == id }) {
             return friend
         } else {
@@ -73,8 +84,23 @@ struct PersonView: View {
 }
 
 struct PersonView_Previews: PreviewProvider {
+    let person: Person = {
+        let person = Person()
+        person.id = UUID().uuidString
+        person.name = "John Doe"
+        person.age = 99
+        person.company = "ACME"
+        person.email = "some@email.com"
+        person.address = "HOBO"
+        person.about = "Unknown"
+        person.registered = Date()
+        person.tags = ["cillum", "consequat", "deserunt", "nostrud", "eiusmod", "minim", "tempor"]
+        
+        return person
+    }()
+    
     static var previews: some View {
-        PersonView(person: Person(id: UUID().uuidString, name: "John Doe", age: 99, company: "ACME", email: "some@email.com", address: "HOBO", about: "Unknown", registered: Date(),
-                                  tags: ["cillum", "consequat", "deserunt", "nostrud", "eiusmod", "minim", "tempor"], friends: []), persons: [])
+        PersonView(person: Person())
+        
     }
 }

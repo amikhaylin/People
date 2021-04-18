@@ -6,12 +6,24 @@
 //
 
 import SwiftUI
+import CoreData
 
 @main
 struct PeopleApp: App {
+    let persistenceController = PersistenceController.shared
+    
     var body: some Scene {
         WindowGroup {
-            ContentView(persons: [])
+            ContentView()
+                .environment(\.managedObjectContext, setupContext())
         }
     }
+    
+    func setupContext() -> NSManagedObjectContext {
+        return persistenceController.container.viewContext
+    }
+}
+
+extension CodingUserInfoKey {
+  static let managedObjectContext = CodingUserInfoKey(rawValue: "managedObjectContext")!
 }
