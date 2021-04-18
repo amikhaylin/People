@@ -34,8 +34,6 @@ struct NetworkService {
                 decoder.userInfo[CodingUserInfoKey.managedObjectContext] = context
                 let decodedData = try decoder.decode([Person].self, from: data)
                 
-                // TODO: Save
-                
                 DispatchQueue.main.async {
                     completion(decodedData)
                 }

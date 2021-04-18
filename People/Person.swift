@@ -8,31 +8,6 @@
 import Foundation
 import CoreData
 
-// TODO: Clean this
-//struct PersonZ: Codable, Identifiable {
-//    struct Friend: Codable {
-//        let id: String
-//        let name: String
-//    }
-//
-//    let id: String
-//    let name: String
-//    let age: Int
-//    let company: String
-//    let email: String
-//    let address: String
-//    let about: String
-//    let registered: Date
-//    let tags: [String]
-//    let friends: [Friend]
-//
-//    var formattedRegisteredDate: String {
-//        let formatter = DateFormatter()
-//        formatter.dateStyle = .long
-//        return formatter.string(from: registered)
-//    }
-//}
-
 enum DecoderConfigurationError: Error {
   case missingManagedObjectContext
 }
@@ -80,6 +55,10 @@ public class Person: NSManagedObject, Identifiable, Codable {
         }
     }
     
+    var wrappedTags: [String] {
+        tags ?? []
+    }
+    
     public required convenience init(from decoder: Decoder) throws {
         guard let context = decoder.userInfo[CodingUserInfoKey.managedObjectContext] as? NSManagedObjectContext else {
             throw  DecoderConfigurationError.missingManagedObjectContext
@@ -108,6 +87,7 @@ public class Person: NSManagedObject, Identifiable, Codable {
             addToFriends(friend)
         }
         
+        try? context.save()
     }
     
     public func encode(to encoder: Encoder) throws {

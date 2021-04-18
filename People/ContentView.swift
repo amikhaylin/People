@@ -51,10 +51,6 @@ struct ContentView: View {
             }, label: {
                 Image(systemName: "arrow.triangle.2.circlepath")
             }))
-            .onAppear(perform: {
-                //TODO: Here will be loading from core data
-            })
-            
         }
         
     }

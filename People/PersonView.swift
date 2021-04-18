@@ -43,8 +43,8 @@ struct PersonView: View {
             
             VStack(alignment: .leading) {
                 ForEach(person.friendsArray, id: \.id ) { friend in
-//                    NavigationLink(
-//                        destination: PersonView(person: getFriend(with: friend.wrappedId)) {
+                    NavigationLink(
+                        destination: PersonView(person: getFriend(with: friend.wrappedId))) {
                         HStack {
                             Image(systemName: "person.crop.circle")
                                 .font(.largeTitle)
@@ -54,23 +54,33 @@ struct PersonView: View {
                                     .font(.title3)
                             }
                         }
-//                    }
+                    }
                 }
                 
                 
-                TagsView(tags: person.tags!)
+                TagsView(tags: person.wrappedTags)
             }
         }
         .navigationBarTitle("Person", displayMode: .inline)
     }
     
-//    func getFriend(with id: String) -> Person {
-//        if let friend = persons.first(where: { $0.id == id }) {
-//            return friend
-//        } else {
-//            fatalError("Friend does not exist")
-//        }
-//    }
+    func getFriend(with id: String) -> Person {
+        let fetchRequest = NSFetchRequest<Person>(entityName: "Person")
+        let predicate = NSPredicate(format: "id == %@", id)
+        fetchRequest.predicate = predicate
+        let persons: [Person]
+        do {
+            persons = try viewContext.fetch(fetchRequest)
+        } catch {
+            fatalError("Fetch faults \(error.localizedDescription)")
+        }
+        
+        if let friend = persons.first(where: { $0.id == id }) {
+            return friend
+        } else {
+            fatalError("Friend does not exist")
+        }
+    }
 }
 
 struct PersonView_Previews: PreviewProvider {
