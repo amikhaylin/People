@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct ContentView: View {
-    @State var persons: [Person]
+    @Environment(\.managedObjectContext) private var viewContext
+    
+    @FetchRequest(entity: Person.entity(), sortDescriptors: []) var persons: FetchedResults<Person>
     
     var body: some View {
         NavigationView {
@@ -16,7 +19,7 @@ struct ContentView: View {
                 LazyVStack {
                     ForEach(persons) { person in
                         NavigationLink(
-                            destination: PersonView(person: person, persons: persons)) {
+                            destination: PersonView(person: person)) {
                             ZStack(alignment: .leading) {
                                 Color.orange
                                     .cornerRadius(5.0)
@@ -25,9 +28,9 @@ struct ContentView: View {
                                         .font(.largeTitle)
                                         
                                     VStack(alignment: .leading) {
-                                        Text(person.name)
+                                        Text(person.name ?? "Unknown")
                                             .font(.title3)
-                                        Text(person.company)
+                                        Text(person.company ?? "Unknown")
                                             .font(.caption)
                                     }
                                 }
@@ -42,8 +45,8 @@ struct ContentView: View {
             }
             .navigationBarTitle("People")
             .navigationBarItems(trailing: Button(action: {
-                NetworkService().loadPersons { (persons) in
-                    self.persons = persons
+                NetworkService().loadPersons(context: viewContext) { (persons) in
+//                    self.persons = persons
                 }
             }, label: {
                 Image(systemName: "arrow.triangle.2.circlepath")
@@ -59,7 +62,6 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(persons: [Person(id: UUID().uuidString, name: "John Doe", age: 99, company: "ACME", email: "some@email.com", address: "HOBO", about: "Unknown", registered: Date(), tags: ["tag"], friends: []),
-                              Person(id: UUID().uuidString, name: "Jeine Doe", age: 99, company: "ACME", email: "some@email.com", address: "HOBO", about: "Unknown", registered: Date(), tags: ["tag"], friends: [])])
+        ContentView()
     }
 }
